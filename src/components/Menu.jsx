@@ -1,49 +1,25 @@
-import { useState } from "react";
-import Item from "./Item";
-import OrderModal from "./OrderModal";
+import { useContext } from "react";
+import { MenuContext } from "../context/menuContext";
+import { CartContext } from "../context/cartContext";
 
-function Menu({ menu, cart, setCart }) {
-  const [modalOn, setModalOn] = useState(false);
-  const [modalMenu, setModalMenu] = useState(null);
-  if (!menu)
-    return (
-      <div style={{ textAlign: "center", margin: "80px" }}>
-        메뉴 정보가 없어요!
-      </div>
-    );
+function Menu() {
+  const { menu } = useContext(MenuContext);
+  const { addToCart } = useContext(CartContext);
 
-  const categorys = Object.keys(menu);
   return (
-    <>
-      {categorys.map((category) => {
-        return (
-          <section key={category}>
-            <h2>{category}</h2>
-            <ul className="menu">
-              {menu[category].map((item) => (
-                <Item
-                  key={item.name}
-                  item={item}
-                  clickHandler={() => {
-                    setModalMenu(item);
-                    setModalOn(true);
-                  }}
-                />
-              ))}
-            </ul>
-          </section>
-        );
-      })}
-      {modalOn ? (
-        <OrderModal
-          modalMenu={modalMenu}
-          setModalOn={setModalOn}
-          cart={cart}
-          setCart={setCart}
-        />
-      ) : null}
-    </>
+    <div className="menu-container">
+      {menu.map((item) => (
+        <div key={item.id} className="menu-card">
+          <img src={item.img} alt={item.name} />
+          <h3>{item.name}</h3>
+          <p>{item.description}</p>
+          <p>{item.price.toLocaleString()}원</p>
+          <button onClick={() => addToCart(item)}>
+            장바구니 담기
+          </button>
+        </div>
+      ))}
+    </div>
   );
 }
-
 export default Menu;
